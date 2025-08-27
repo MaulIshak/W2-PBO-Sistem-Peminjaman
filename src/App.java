@@ -1,135 +1,300 @@
-
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.List;
+import java.util.Scanner;
 import peminjaman.Barang;
 import peminjaman.Mahasiswa;
 import peminjaman.Peminjaman;
+import peminjaman.Teknisi;
 
 public class App {
-    private static List<Barang> daftarBarang = new ArrayList<>();
-    private static List<Mahasiswa> daftarMahasiswa = new ArrayList<>();
-    private static List<Peminjaman> daftarPeminjaman = new ArrayList<>();
+    // Objek Teknisi menjadi pusat data untuk inventaris dan catatan peminjaman
+    private static Teknisi teknisi = new Teknisi("Pak Ujang");
     private static Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
+        inisialisasiDataAwal();
+
         int pilihan;
         do {
-            System.out.println("\n===== MENU PEMINJAMAN BARANG =====");
-            System.out.println("1. Tambah Barang");
-            System.out.println("2. Tambah Mahasiswa");
-            System.out.println("3. Peminjaman Barang");
-            System.out.println("4. Lihat Daftar Peminjaman");
-            System.out.println("5. Keluar");
-            System.out.print("Pilih menu: ");
-            pilihan = scanner.nextInt();
-            scanner.nextLine(); // konsumsi newline
+            System.out.println("\n===== SISTEM INVENTARIS & PEMINJAMAN JTK =====");
+            System.out.println("Pilih peran Anda:");
+            System.out.println("1. Teknisi / Admin");
+            System.out.println("2. Mahasiswa");
+            System.out.println("3. Keluar");
+            System.out.print("Pilihan: ");
+
+            pilihan = getPilihanMenu();
 
             switch (pilihan) {
                 case 1:
-                    tambahBarang();
+                    runMenuTeknisi();
                     break;
                 case 2:
-                    tambahMahasiswa();
+                    runMenuMahasiswa();
                     break;
                 case 3:
-                    peminjamanBarang();
-                    break;
-                case 4:
-                    lihatDaftarPeminjaman();
-                    break;
-                case 5:
-                    System.out.println("Terima kasih. Program selesai.");
+                    System.out.println("Terima kasih telah menggunakan sistem ini.");
                     break;
                 default:
-                    System.out.println("Pilihan tidak valid!");
+                    System.out.println("Pilihan tidak valid.");
+            }
+        } while (pilihan != 3);
+    }
+
+    // =================================================================
+    // MENU TEKNISI
+    // =================================================================
+    private static void runMenuTeknisi() {
+        int pilihan;
+        do {
+            System.out.println("\n--- MENU TEKNISI ---");
+            System.out.println("1. Tambah Barang Baru");
+            System.out.println("2. Tambah Stok Barang");
+            System.out.println("3. Lihat Semua Riwayat Peminjaman");
+            System.out.println("4. Lihat Stok Barang");
+            System.out.println("5. Kembali ke Menu Utama");
+            System.out.print("Pilihan: ");
+            pilihan = getPilihanMenu();
+
+            switch (pilihan) {
+                case 1:
+                    tambahBarangBaru();
+                    break;
+                case 2:
+                    tambahStokBarang();
+                    break;
+                case 3:
+                    lihatSemuaPeminjaman();
+                    break;
+                case 4:
+                    lihatStokBarang();
+                    break;
+                case 5:
+                    System.out.println("Kembali ke menu utama...");
+                    break;
+                default:
+                    System.out.println("Pilihan tidak valid.");
             }
         } while (pilihan != 5);
     }
 
-    private static void tambahBarang() {
+    private static void tambahBarangBaru() {
+        System.out.println("\n--- Tambah Barang Baru ---");
         System.out.print("Masukkan nama barang: ");
         String nama = scanner.nextLine();
-        System.out.print("Masukkan jumlah barang: ");
+        System.out.print("Masukkan jumlah stok awal: ");
+        int jumlah = scanner.nextInt();
+        scanner.nextLine();
+        teknisi.tambahBarang(nama, jumlah);
+        System.out.println("Barang baru berhasil ditambahkan.");
+    }
+
+    private static void tambahStokBarang() {
+        System.out.println("\n--- Tambah Stok Barang ---");
+        lihatStokBarang();
+        System.out.print("Pilih nomor barang yang akan ditambah stoknya: ");
+        int idxBarang = scanner.nextInt() - 1;
+        scanner.nextLine();
+        System.out.print("Masukkan jumlah stok yang ditambahkan: ");
         int jumlah = scanner.nextInt();
         scanner.nextLine();
 
-        Barang barang = new Barang(nama, "");
-        barang.setKuantitas(jumlah);
-        daftarBarang.add(barang);
-        System.out.println("Barang berhasil ditambahkan.");
+        boolean berhasil = teknisi.tambahStokBarang(idxBarang, jumlah);
+        if (berhasil) {
+            System.out.println("Stok berhasil ditambahkan.");
+        } else {
+            System.out.println("Gagal! Pilihan barang tidak valid.");
+        }
     }
 
-    private static void tambahMahasiswa() {
+    private static void lihatSemuaPeminjaman() {
+        List<Peminjaman> semuaPeminjaman = teknisi.getSemuaPeminjaman();
+        if (semuaPeminjaman.isEmpty()) {
+            System.out.println("\nBelum ada riwayat peminjaman sama sekali.");
+            return;
+        }
+        System.out.println("\n=============== SEMUA RIWAYAT PEMINJAMAN ===============");
+        tampilkanHeaderPeminjaman(true);
+        int no = 1;
+        for (Peminjaman p : semuaPeminjaman) {
+            tampilkanDetailPeminjaman(p, no++, true);
+        }
+        System.out.println(
+                "======================================================================================================================");
+    }
+
+    // =================================================================
+    // MENU MAHASISWA
+    // =================================================================
+    private static void runMenuMahasiswa() {
+        System.out.println("\n--- Sesi Mahasiswa ---");
         System.out.print("Masukkan NIM: ");
         String nim = scanner.nextLine();
         System.out.print("Masukkan Nama: ");
         String nama = scanner.nextLine();
-
         Mahasiswa mhs = new Mahasiswa(nim, nama);
-        daftarMahasiswa.add(mhs);
-        System.out.println("Mahasiswa berhasil ditambahkan.");
+        System.out.println("Login berhasil sebagai " + mhs.getNama() + ".");
+
+        int pilihan;
+        do {
+            System.out.println("\n--- MENU MAHASISWA (" + mhs.getNama() + ") ---");
+            System.out.println("1. Pinjam Barang");
+            System.out.println("2. Kembalikan Barang");
+            System.out.println("3. Lihat Riwayat Peminjaman Saya");
+            System.out.println("4. Kembali ke Menu Utama");
+            System.out.print("Pilihan: ");
+            pilihan = getPilihanMenu();
+
+            switch (pilihan) {
+                case 1:
+                    lakukanPeminjaman(mhs);
+                    break;
+                case 2:
+                    lakukanPengembalian(mhs);
+                    break;
+                case 3:
+                    lihatRiwayatPribadi(mhs);
+                    break;
+                case 4:
+                    System.out.println("Kembali ke menu utama...");
+                    break;
+                default:
+                    System.out.println("Pilihan tidak valid.");
+            }
+        } while (pilihan != 4);
     }
 
-    private static void peminjamanBarang() {
-        if (daftarMahasiswa.isEmpty() || daftarBarang.isEmpty()) {
-            System.out.println("Data mahasiswa atau barang kosong!");
-            return;
-        }
-
-        System.out.println("Pilih Mahasiswa:");
-        for (int i = 0; i < daftarMahasiswa.size(); i++) {
-            System.out.println(
-                    (i + 1) + ". " + daftarMahasiswa.get(i).getNama() + " (" + daftarMahasiswa.get(i).getNim() + ")");
-        }
-        System.out.print("Pilihan: ");
-        int idxMhs = scanner.nextInt() - 1;
-        scanner.nextLine();
-        Mahasiswa mhs = daftarMahasiswa.get(idxMhs);
-
-        System.out.println("Pilih Barang:");
-        for (int i = 0; i < daftarBarang.size(); i++) {
-            System.out.println((i + 1) + ". " + daftarBarang.get(i).getNamaBarang() + " (stok: "
-                    + daftarBarang.get(i).getKuantitas() + ")");
-        }
-        System.out.print("Pilihan: ");
+    private static void lakukanPeminjaman(Mahasiswa mhs) {
+        System.out.println("\n--- Formulir Peminjaman Barang ---");
+        lihatStokBarang();
+        System.out.print("\nPilih nomor barang yang akan dipinjam: ");
         int idxBarang = scanner.nextInt() - 1;
         scanner.nextLine();
-        Barang barang = daftarBarang.get(idxBarang);
-
-        System.out.print("Jumlah yang dipinjam: ");
+        System.out.print("Jumlah yang akan dipinjam: ");
         int qty = scanner.nextInt();
         scanner.nextLine();
 
-        if (barang.getKuantitas() >= qty) {
-            barang.setKuantitas(barang.getKuantitas() - qty);
-            Peminjaman p = new Peminjaman(mhs, barang, java.time.LocalDate.now(), qty);
-            daftarPeminjaman.add(p);
-            System.out.println("Peminjaman berhasil.");
+        Peminjaman peminjamanBaru = mhs.pinjamBarang(teknisi, idxBarang, qty);
+        if (peminjamanBaru != null) {
+            System.out.println("Peminjaman berhasil dicatat!");
         } else {
-            System.out.println("Stok barang tidak mencukupi!");
+            System.out.println("Peminjaman GAGAL. Stok tidak mencukupi atau pilihan tidak valid.");
         }
     }
 
-    private static void lihatDaftarPeminjaman() {
-        if (daftarPeminjaman.isEmpty()) {
-            System.out.println("Belum ada data peminjaman.");
+    private static void lakukanPengembalian(Mahasiswa mhs) {
+        System.out.println("\n--- Formulir Pengembalian Barang ---");
+        List<Peminjaman> pinjamanAktif = teknisi.getPeminjamanAktifByMahasiswa(mhs);
+
+        if (pinjamanAktif.isEmpty()) {
+            System.out.println("Anda tidak memiliki barang yang sedang dipinjam.");
             return;
         }
 
-        System.out.println("\n=== DAFTAR PEMINJAMAN ===");
-        System.out.printf("%-15s %-20s %-15s %-10s %-15s%n",
-                "NIM", "Nama Mahasiswa", "Nama Barang", "Jumlah", "Tanggal Pinjam");
-        System.out.println("----------------------------------------------------------------------------");
+        System.out.println("Pilih barang yang akan dikembalikan:");
+        tampilkanHeaderPeminjaman(false);
+        for (int i = 0; i < pinjamanAktif.size(); i++) {
+            tampilkanDetailPeminjaman(pinjamanAktif.get(i), (i + 1), false);
+        }
+        System.out.println("-------------------------------------------------------------------------------------");
+        System.out.print("Pilihan: ");
+        int pilihan = scanner.nextInt() - 1;
+        scanner.nextLine();
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        if (pilihan >= 0 && pilihan < pinjamanAktif.size()) {
+            Peminjaman peminjaman = pinjamanAktif.get(pilihan);
+            mhs.kembalikanBarang(peminjaman);
+            System.out.println("Barang '" + peminjaman.getBarang().getNamaBarang() + "' berhasil dikembalikan.");
+        } else {
+            System.out.println("Pilihan tidak valid.");
+        }
+    }
 
-        for (Peminjaman p : daftarPeminjaman) {
-            System.out.printf("%-15s %-20s %-15s %-10d %-15s%n",
+    private static void lihatRiwayatPribadi(Mahasiswa mhs) {
+        List<Peminjaman> riwayat = teknisi.getPeminjamanByMahasiswa(mhs);
+        if (riwayat.isEmpty()) {
+            System.out.println("\nAnda belum memiliki riwayat peminjaman.");
+            return;
+        }
+        System.out.println("\n=============== RIWAYAT PEMINJAMAN " + mhs.getNama().toUpperCase() + " ===============");
+        tampilkanHeaderPeminjaman(false);
+        int no = 1;
+        for (Peminjaman p : riwayat) {
+            tampilkanDetailPeminjaman(p, no++, false);
+        }
+        System.out.println(
+                "==================================================================================================");
+    }
+
+    // =================================================================
+    // METODE BANTU (HELPERS)
+    // =================================================================
+    private static void inisialisasiDataAwal() {
+        teknisi.tambahBarang("Proyektor Epson", 5);
+        teknisi.tambahBarang("Terminal Listrik 8-lubang", 10);
+        teknisi.tambahBarang("Kabel HDMI 5m", 8);
+    }
+
+    private static void lihatStokBarang() {
+        System.out.println("\n--- Daftar Stok Barang ---");
+        List<Barang> inventaris = teknisi.getDaftarBarang();
+        System.out.printf("%-5s %-25s %-10s%n", "No.", "Nama Barang", "Stok");
+        System.out.println("-------------------------------------------");
+        for (int i = 0; i < inventaris.size(); i++) {
+            Barang brg = inventaris.get(i);
+            System.out.printf("%-5d %-25s %-10d%n", (i + 1), brg.getNamaBarang(), brg.getKuantitas());
+        }
+        System.out.println("-------------------------------------------");
+    }
+
+    private static int getPilihanMenu() {
+        while (!scanner.hasNextInt()) {
+            System.out.println("Input tidak valid. Harap masukkan angka.");
+            scanner.next();
+            System.out.print("Pilihan: ");
+        }
+        int pilihan = scanner.nextInt();
+        scanner.nextLine();
+        return pilihan;
+    }
+
+    private static void tampilkanHeaderPeminjaman(boolean showMahasiswa) {
+        if (showMahasiswa) {
+            System.out.printf("%-5s %-15s %-20s %-25s %-10s %-20s %-20s %-10s%n", "No.", "NIM", "Nama Mahasiswa",
+                    "Nama Barang", "Jumlah", "Waktu Pinjam", "Waktu Kembali", "Status");
+            System.out.println(
+                    "----------------------------------------------------------------------------------------------------------------------");
+        } else {
+            System.out.printf("%-5s %-25s %-10s %-20s %-20s %-10s%n", "No.", "Nama Barang", "Jumlah", "Waktu Pinjam",
+                    "Waktu Kembali", "Status");
+            System.out.println(
+                    "--------------------------------------------------------------------------------------------------");
+        }
+    }
+
+    private static void tampilkanDetailPeminjaman(Peminjaman p, int no, boolean showMahasiswa) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yy HH:mm");
+        String waktuKembaliStr = (p.getWaktuPengembalian() != null) ? p.getWaktuPengembalian().format(formatter) : "-";
+        String status = p.isStatusAktif() ? "DIPINJAM" : "KEMBALI";
+
+        if (showMahasiswa) {
+            System.out.printf("%-5d %-15s %-20s %-25s %-10d %-20s %-20s %-10s%n",
+                    no,
                     p.getPeminjam().getNim(),
                     p.getPeminjam().getNama(),
                     p.getBarang().getNamaBarang(),
                     p.getKuantitas(),
-                    p.getWaktuPeminjaman().format(formatter));
+                    p.getWaktuPeminjaman().format(formatter),
+                    waktuKembaliStr,
+                    status);
+        } else {
+            System.out.printf("%-5d %-25s %-10d %-20s %-20s %-10s%n",
+                    no,
+                    p.getBarang().getNamaBarang(),
+                    p.getKuantitas(),
+                    p.getWaktuPeminjaman().format(formatter),
+                    waktuKembaliStr,
+                    status);
         }
     }
 }
