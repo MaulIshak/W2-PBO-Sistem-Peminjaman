@@ -46,7 +46,7 @@ public class Teknisi {
     public List<Barang> getDaftarBarang() {
         return new ArrayList<>(this.daftarBarang);
     }
-    
+
     public List<Peminjaman> getSemuaPeminjaman() {
         return new ArrayList<>(this.semuaPeminjaman);
     }
@@ -54,13 +54,13 @@ public class Teknisi {
     // Metode untuk menyaring data peminjaman berdasarkan mahasiswa
     public List<Peminjaman> getPeminjamanByMahasiswa(Mahasiswa mhs) {
         return semuaPeminjaman.stream()
-            .filter(p -> p.getPeminjam().getNim().equals(mhs.getNim()))
-            .collect(Collectors.toList());
+                .filter(p -> p.getPeminjam().getNim().equals(mhs.getNim()))
+                .collect(Collectors.toList());
     }
-    
+
     public List<Peminjaman> getPeminjamanAktifByMahasiswa(Mahasiswa mhs) {
         return semuaPeminjaman.stream()
-            .filter(p -> p.getPeminjam().getNim().equals(mhs.getNim()) && p.isStatusAktif())
-            .collect(Collectors.toList());
+                .filter(p -> p.getPeminjam().getNim().equals(mhs.getNim()) && p.isStatusAktif())
+                .collect(Collectors.toList());
     }
 }
