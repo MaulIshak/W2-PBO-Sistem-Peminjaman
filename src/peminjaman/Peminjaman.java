@@ -3,32 +3,25 @@ package peminjaman;
 import java.time.LocalDateTime;
 
 /**
- * Kelas Peminjaman sebagai pencatat data transaksi.
- * Menggunakan LocalDateTime untuk presisi waktu.
+ * Kelas Peminjaman adalah kelas data sederhana (POJO)
+ * untuk menyimpan informasi satu transaksi peminjaman.
  */
 public class Peminjaman {
     private Mahasiswa peminjam;
     private Barang barang;
-    private LocalDateTime waktuPeminjaman;
-    private LocalDateTime waktuPengembalian;
-    private int kuantitas;
-    private boolean statusAktif;
+    private LocalDateTime waktuPinjam;
+    private LocalDateTime waktuKembali;
+    
+    private int jumlah;
 
-    public Peminjaman(Mahasiswa peminjam, Barang barang, LocalDateTime waktuPeminjaman, int kuantitas) {
+    public Peminjaman(Mahasiswa peminjam, Barang barang, LocalDateTime waktuPinjam, int jumlah) {
         this.peminjam = peminjam;
         this.barang = barang;
-        this.waktuPeminjaman = waktuPeminjaman;
-        this.kuantitas = kuantitas;
-        this.waktuPengembalian = null;
-        this.statusAktif = true;
+        this.waktuPinjam = waktuPinjam;
+        this.jumlah = jumlah;
     }
 
-    public void setStatusSelesai() {
-        this.statusAktif = false;
-        this.waktuPengembalian = LocalDateTime.now();
-    }
-
-    // --- Getter ---
+    // Hanya Getter, karena data transaksi tidak seharusnya diubah setelah dibuat.
     public Mahasiswa getPeminjam() {
         return peminjam;
     }
@@ -37,19 +30,35 @@ public class Peminjaman {
         return barang;
     }
 
-    public LocalDateTime getWaktuPeminjaman() {
-        return waktuPeminjaman;
-    }
-    
-    public LocalDateTime getWaktuPengembalian() {
-        return waktuPengembalian;
+    public LocalDateTime getWaktuPinjam() {
+        return waktuPinjam;
     }
 
-    public int getKuantitas() {
-        return kuantitas;
+    public int getJumlah() {
+        return jumlah;
     }
 
-    public boolean isStatusAktif() {
-        return statusAktif;
+    public void setPeminjam(Mahasiswa peminjam) {
+        this.peminjam = peminjam;
+    }
+
+    public void setBarang(Barang barang) {
+        this.barang = barang;
+    }
+
+    public void setWaktuPinjam(LocalDateTime waktuPinjam) {
+        this.waktuPinjam = waktuPinjam;
+    }
+
+    public LocalDateTime getWaktuKembali() {
+        return waktuKembali;
+    }
+
+    public void setWaktuKembali(LocalDateTime waktuKembali) {
+        this.waktuKembali = waktuKembali;
+    }
+
+    public void setJumlah(int jumlah) {
+        this.jumlah = jumlah;
     }
 }

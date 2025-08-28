@@ -2,65 +2,52 @@ package peminjaman;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
- * Kelas Teknisi menjadi pusat data dan layanan inventaris.
- * Mengelola semua barang dan semua catatan peminjaman.
+ * Kelas Teknisi berperan sebagai pengelola inventaris barang.
  */
 public class Teknisi {
     private String nama;
     private List<Barang> daftarBarang;
-    private List<Peminjaman> semuaPeminjaman;
 
     public Teknisi(String nama) {
         this.nama = nama;
         this.daftarBarang = new ArrayList<>();
-        this.semuaPeminjaman = new ArrayList<>();
     }
 
-    // --- Metode untuk Teknisi ---
-    public void tambahBarang(String nama, int kuantitas) {
-        this.daftarBarang.add(new Barang(nama, kuantitas));
+    // Method untuk menyiapkan barang di awal
+    public void siapkanBarang(String namaBarang, int stok) {
+        this.daftarBarang.add(new Barang(namaBarang, stok));
     }
 
-    public boolean tambahStokBarang(int indexBarang, int jumlah) {
-        if (indexBarang >= 0 && indexBarang < daftarBarang.size()) {
-            Barang barang = daftarBarang.get(indexBarang);
-            barang.tambahKuantitas(jumlah);
-            return true;
+    // Method untuk menampilkan daftar barang yang dia kelola
+    public void tampilkanBarangTersedia() {
+        // clear terminal
+
+        System.out.println("\n--- Daftar Barang Tersedia ---");
+        // for (int i = 0; i < daftarBarang.size(); i++) {
+        // Barang brg = daftarBarang.get(i);
+        // System.out.println((i + 1) + ". " + brg.getNamaBarang() + " (Stok: " +
+        // brg.getStok() + ")");
+        // }
+
+        // print tabel barang
+        System.out.printf("================================================================================%n");
+        System.out.printf("| %-3s | %-30s | %-10s |%n", "No", "Nama Barang", "Stok");
+        System.out.printf("--------------------------------------------------------------------------------%n");
+        for (int i = 0; i < daftarBarang.size(); i++) {
+            Barang brg = daftarBarang.get(i);
+            System.out.printf("| %-3s | %-30s | %-10s |%n", (i + 1), brg.getNamaBarang(), brg.getStok());
         }
-        return false;
+        System.out.printf("================================================================================%n");
+
     }
 
-    // --- Metode Layanan untuk Sistem ---
-    public void catatPeminjaman(Peminjaman peminjaman) {
-        this.semuaPeminjaman.add(peminjaman);
-    }
-
-    // --- Getter untuk mendapatkan informasi ---
-    public String getNama() {
-        return this.nama;
-    }
-
-    public List<Barang> getDaftarBarang() {
-        return new ArrayList<>(this.daftarBarang);
-    }
-    
-    public List<Peminjaman> getSemuaPeminjaman() {
-        return new ArrayList<>(this.semuaPeminjaman);
-    }
-
-    // Metode untuk menyaring data peminjaman berdasarkan mahasiswa
-    public List<Peminjaman> getPeminjamanByMahasiswa(Mahasiswa mhs) {
-        return semuaPeminjaman.stream()
-            .filter(p -> p.getPeminjam().getNim().equals(mhs.getNim()))
-            .collect(Collectors.toList());
-    }
-    
-    public List<Peminjaman> getPeminjamanAktifByMahasiswa(Mahasiswa mhs) {
-        return semuaPeminjaman.stream()
-            .filter(p -> p.getPeminjam().getNim().equals(mhs.getNim()) && p.isStatusAktif())
-            .collect(Collectors.toList());
+    // Method untuk memberikan objek barang kepada mahasiswa
+    public Barang getBarang(int index) {
+        if (index >= 0 && index < daftarBarang.size()) {
+            return daftarBarang.get(index);
+        }
+        return null; // Mengembalikan null jika pilihan tidak valid
     }
 }
