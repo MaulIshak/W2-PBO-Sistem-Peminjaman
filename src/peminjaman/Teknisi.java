@@ -25,12 +25,6 @@ public class Teknisi {
         // clear terminal
 
         System.out.println("\n--- Daftar Barang Tersedia ---");
-        // for (int i = 0; i < daftarBarang.size(); i++) {
-        // Barang brg = daftarBarang.get(i);
-        // System.out.println((i + 1) + ". " + brg.getNamaBarang() + " (Stok: " +
-        // brg.getStok() + ")");
-        // }
-
         // print tabel barang
         System.out.printf("================================================================================%n");
         System.out.printf("| %-3s | %-30s | %-10s |%n", "No", "Nama Barang", "Stok");
@@ -48,6 +42,6 @@ public class Teknisi {
         if (index >= 0 && index < daftarBarang.size()) {
             return daftarBarang.get(index);
         }
-        return null; // Mengembalikan null jika pilihan tidak valid
+        return null;
     }
 }

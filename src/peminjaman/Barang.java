@@ -2,7 +2,6 @@ package peminjaman;
 
 /**
  * Kelas Barang merepresentasikan satu jenis barang.
- * Dia bertanggung jawab atas stoknya sendiri (Enkapsulasi).
  */
 public class Barang {
     private String namaBarang;
@@ -13,8 +12,6 @@ public class Barang {
         this.stok = stokAwal;
     }
 
-    // Method ini adalah bagian dari enkapsulasi.
-    // Kelas lain tidak bisa langsung mengubah stok, tapi harus "meminta".
     public boolean kurangiStok(int jumlah) {
         if (jumlah > 0 && this.stok >= jumlah) {
             this.stok -= jumlah;

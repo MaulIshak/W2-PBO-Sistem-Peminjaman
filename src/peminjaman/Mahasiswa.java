@@ -8,7 +8,6 @@ import java.util.Scanner;
 
 /**
  * Kelas Mahasiswa adalah Aktor Utama.
- * Dia memiliki data diri (state) dan bisa melakukan aksi (behavior).
  */
 public class Mahasiswa {
     // State (Atribut) dari Mahasiswa
@@ -22,7 +21,6 @@ public class Mahasiswa {
         this.riwayatPeminjaman = new ArrayList<>(); // Setiap mahasiswa punya riwayatnya sendiri
     }
 
-    // Behavior (Method) dari Mahasiswa
     public void lakukanPeminjaman(Teknisi teknisi, Scanner scanner) {
         System.out.println("\n--- Formulir Peminjaman ---");
         teknisi.tampilkanBarangTersedia();
