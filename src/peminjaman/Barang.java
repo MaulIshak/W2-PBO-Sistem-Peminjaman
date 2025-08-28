@@ -21,7 +21,7 @@ public class Barang {
     }
 
     public void kembalikanStok() {
-        this.stok += 1;
+        this.stok++;
     }
 
     // Getter

@@ -59,22 +59,26 @@ public class Mahasiswa {
 
         // Print tabel peminjaman
         System.out
-                .printf("================================================================================================%n");
+                .printf("=============================================================================================%n");
 
-        System.out.printf("| %-3s | %-30s | %-10s | %-20s | %-20s |%n", "No.", "Nama Barang", "Jumlah",
+        System.out.printf("| %-3s | %-30s | %-20s | %-20s |%n", "No.", "Nama Barang",
                 "Waktu Peminjaman",
                 "Waktu Pengembalian");
         System.out
-                .printf("-----------------------------------------------------------------------------------------------%n");
+                .printf("--------------------------------------------------------------------------------------------%n");
         int no = 1;
         for (Peminjaman p : riwayatPeminjaman) {
             Barang barang = p.getBarang();
-            System.out.printf("| %-3s | %-30s | %-10s | %-20s | %-20s |%n", no++, barang.getNamaBarang(), p.getJumlah(),
-                    p.getWaktuPinjam().format(formatter),
-                    (p.getWaktuKembali() != null) ? p.getWaktuKembali().format(formatter) : null);
+            int jumlah = p.getJumlah();
+
+            for (int i = 0; i < jumlah; i++) {
+                System.out.printf("| %-3s | %-30s | %-20s | %-20s |%n", no++, barang.getNamaBarang(),
+                        p.getWaktuPinjam().format(formatter),
+                        (p.getWaktuKembali() != null) ? p.getWaktuKembali().format(formatter) : null);
+            }
         }
         System.out
-                .printf("===============================================================================================%n");
+                .printf("============================================================================================%n");
     }
 
     public void kembalikanBarang(Scanner scanner) {
@@ -85,9 +89,11 @@ public class Mahasiswa {
         }
         // tampilkan riwayat peminjaman
         this.lihatRiwayatPeminjaman();
-        
+
         System.out.print("Pilih nomor barang yang akan dikembalikan: ");
         int pilihan = scanner.nextInt() - 1;
+        scanner.nextLine();
+
         if (pilihan >= 0 && pilihan < riwayatPeminjaman.size()
                 && riwayatPeminjaman.get(pilihan).getWaktuKembali() == null) {
             Peminjaman peminjamanDipilih = riwayatPeminjaman.get(pilihan);
