@@ -23,16 +23,6 @@ public class Teknisi {
     public void tambahBarang(String nama, int kuantitas) {
         this.daftarBarang.add(new Barang(nama, kuantitas));
     }
-
-    public boolean tambahStokBarang(int indexBarang, int jumlah) {
-        if (indexBarang >= 0 && indexBarang < daftarBarang.size()) {
-            Barang barang = daftarBarang.get(indexBarang);
-            barang.tambahKuantitas(jumlah);
-            return true;
-        }
-        return false;
-    }
-
     // --- Metode Layanan untuk Sistem ---
     public void catatPeminjaman(Peminjaman peminjaman) {
         this.semuaPeminjaman.add(peminjaman);

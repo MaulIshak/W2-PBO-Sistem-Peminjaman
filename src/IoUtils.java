@@ -16,10 +16,9 @@ public class IoUtils {
     do {
       System.out.println("\n--- MENU TEKNISI ---");
       System.out.println("1. Tambah Barang Baru");
-      System.out.println("2. Tambah Stok Barang");
-      System.out.println("3. Lihat Semua Riwayat Peminjaman");
-      System.out.println("4. Lihat Stok Barang");
-      System.out.println("5. Kembali ke Menu Utama");
+      System.out.println("2. Lihat Semua Riwayat Peminjaman");
+      System.out.println("3. Lihat Stok Barang");
+      System.out.println("4. Kembali ke Menu Utama");
       System.out.print("Pilihan: ");
       pilihan = getPilihanMenu(scanner);
 
@@ -28,15 +27,12 @@ public class IoUtils {
           tambahBarangBaru(scanner, teknisi);
           break;
         case 2:
-          tambahStokBarang(scanner, teknisi);
-          break;
-        case 3:
           lihatSemuaPeminjaman(teknisi);
           break;
-        case 4:
+        case 3:
           lihatStokBarang(teknisi);
           break;
-        case 5:
+        case 4:
           System.out.println("Kembali ke menu utama...");
           break;
         default:
@@ -54,24 +50,6 @@ public class IoUtils {
     scanner.nextLine();
     teknisi.tambahBarang(nama, jumlah);
     System.out.println("Barang baru berhasil ditambahkan.");
-  }
-
-  public static void tambahStokBarang(Scanner scanner, Teknisi teknisi) {
-    System.out.println("\n--- Tambah Stok Barang ---");
-    lihatStokBarang(teknisi);
-    System.out.print("Pilih nomor barang yang akan ditambah stoknya: ");
-    int idxBarang = scanner.nextInt() - 1;
-    scanner.nextLine();
-    System.out.print("Masukkan jumlah stok yang ditambahkan: ");
-    int jumlah = scanner.nextInt();
-    scanner.nextLine();
-
-    boolean berhasil = teknisi.tambahStokBarang(idxBarang, jumlah);
-    if (berhasil) {
-      System.out.println("Stok berhasil ditambahkan.");
-    } else {
-      System.out.println("Gagal! Pilihan barang tidak valid.");
-    }
   }
 
   public static void lihatSemuaPeminjaman(Teknisi teknisi) {

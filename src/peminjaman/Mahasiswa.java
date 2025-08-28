@@ -40,9 +40,7 @@ public class Mahasiswa {
      * Behavior Mahasiswa untuk mengembalikan barang.
      */
     public void kembalikanBarang(Peminjaman peminjaman) {
-        // 1. Tambah stok barang kembali
         peminjaman.getBarang().tambahKuantitas(peminjaman.getKuantitas());
-        // 2. Ubah status peminjaman menjadi selesai
         peminjaman.setStatusSelesai();
     }
 
